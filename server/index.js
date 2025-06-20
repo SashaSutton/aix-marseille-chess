@@ -34,6 +34,22 @@ app.use(express.urlencoded({ extended: true }));
 // Static files
 app.use('/uploads', express.static('uploads'));
 
+// Root route
+app.get('/', (req, res) => {
+  res.json({
+    message: 'Aix-Marseille Chess Club API',
+    version: '1.0.0',
+    status: 'running',
+    endpoints: {
+      health: '/api/health',
+      auth: '/api/auth',
+      posts: '/api/posts',
+      users: '/api/users'
+    },
+    documentation: 'This is the backend API for the Aix-Marseille Chess Club website'
+  });
+});
+
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/posts', postRoutes);
@@ -59,7 +75,18 @@ app.use((err, req, res, next) => {
 
 // 404 handler
 app.use('*', (req, res) => {
-  res.status(404).json({ message: 'Route not found' });
+  res.status(404).json({ 
+    message: 'Route not found',
+    availableRoutes: [
+      'GET /',
+      'GET /api/health',
+      'POST /api/auth/register',
+      'POST /api/auth/login',
+      'GET /api/posts',
+      'POST /api/posts',
+      'GET /api/users/:id'
+    ]
+  });
 });
 
 // Connect to MongoDB and start server
